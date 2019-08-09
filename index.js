@@ -22,10 +22,10 @@ const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
   position: absolute;
   white-space: nowrap;
   width: 0px;
-  pointer-events: '${props => (props.disabled ? 'none' : 'pointer')}';
 `;
 
 const StyledCheckbox = styled.div`
+  cursor: pointer;
   vertical-align: center;
   width: 16px;
   height: 16px;
@@ -37,7 +37,6 @@ const StyledCheckbox = styled.div`
   }};
   border-radius: 3px;
   transition: all 150ms;
-  pointer-events: '${props => (props.disabled ? 'none' : 'pointer')}';
   ${Icon} {
     fill: none;
     visibility: ${props => (props.checked ? 'visible' : 'hidden')};
@@ -45,21 +44,35 @@ const StyledCheckbox = styled.div`
   ${HiddenCheckbox}:focus + & {
     box-shadow: 0 0 0 3px lightgray;
   }
+  pointer-events: ${props => (props.disabled ? 'none' : 'pointer')};
 `;
 
-const Checkbox = ({ checked, ...props }) => (
-  <CheckboxContainer>
-    <HiddenCheckbox checked={checked} {...props} />
-    <StyledCheckbox checked={checked} {...props}>
-      <Icon cursor="pointer" viewBox="0 0 24 24">
-        <polyline points="20 6 9 17 4 12" />
-      </Icon>
-    </StyledCheckbox>
-  </CheckboxContainer>
-);
-
+const Checkbox = ({ checked, disabled, onClick, ...props }) => {
+  const disableClick = e => {
+    if (disabled === true) {
+      e.preventDefault();
+    }
+  };
+  return (
+    <CheckboxContainer>
+      <HiddenCheckbox checked={checked} {...props} />
+      <StyledCheckbox
+        {...props}
+        checked={checked}
+        onClick={disabled ? disableClick : onClick}
+        disabled={disabled}
+      >
+        <Icon viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12" />
+        </Icon>
+      </StyledCheckbox>
+    </CheckboxContainer>
+  );
+};
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default Checkbox;
