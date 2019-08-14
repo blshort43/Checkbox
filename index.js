@@ -27,8 +27,8 @@ const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
 const StyledCheckbox = styled.div`
   cursor: pointer;
   vertical-align: center;
-  width: 16px;
-  height: 16px;
+  width: ${props => (props.size ? props.size : '16px')};
+  height: ${props => (props.size ? props.size : '16px')};
   background: ${props => {
     if (props.disabled) {
       return '#a3a09a' || '#007eff';
@@ -47,7 +47,14 @@ const StyledCheckbox = styled.div`
   pointer-events: ${props => (props.disabled ? 'none' : 'pointer')};
 `;
 
-const Checkbox = ({ checked, disabled, onClick, ...props }) => {
+const Checkbox = ({
+  checked,
+  disabled,
+  onClick,
+  onChange,
+  readOnly,
+  ...props
+}) => {
   const disableClick = e => {
     if (disabled === true) {
       e.preventDefault();
@@ -55,9 +62,10 @@ const Checkbox = ({ checked, disabled, onClick, ...props }) => {
   };
   return (
     <CheckboxContainer>
-      <HiddenCheckbox checked={checked} {...props} />
+      <HiddenCheckbox readOnly={!onChange} checked={checked} {...props} />
       <StyledCheckbox
         {...props}
+        readOnly={!onChange}
         checked={checked}
         onClick={disabled ? disableClick : onClick}
         disabled={disabled}
@@ -70,9 +78,12 @@ const Checkbox = ({ checked, disabled, onClick, ...props }) => {
   );
 };
 Checkbox.propTypes = {
+  readOnly: PropTypes.bool,
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
+  onChange: PropTypes.func,
+  background: PropTypes.string,
 };
 
 export default Checkbox;
